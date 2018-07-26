@@ -1,6 +1,6 @@
 /**
- * @name storm-map: 
- * @version 0.1.0: Thu, 26 Jul 2018 12:39:58 GMT
+ * @name storm-azure-map: 
+ * @version 0.1.0: Thu, 26 Jul 2018 17:06:35 GMT
  * @author stormid
  * @license MIT
  */
@@ -25,10 +25,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var defaults = {
-	callback: null
-};
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -13963,31 +13959,58 @@ var leafletSrc = createCommonjsModule(function (module, exports) {
 	});
 });
 
-var L$1 = window['L'];
-
-var factory = function factory(sel, options) {
-	var map = L$1.map(sel).setView(options.locations, 13);
-
-	//Create a tile layer that points to the Azure Maps tiles.
-	L$1.tileLayer('https://atlas.microsoft.com/map/imagery/png?subscription-key={subscriptionKey}&api-version=1.0&style=satellite&zoom={z}&x={x}&y={y}', {
-		attribution: '© ' + new Date().getFullYear() + ' Microsoft, © 1992 - ' + new Date().getFullYear() + ' TomTom',
-		// // maxZoom: 20,
-		// crossOrigin: true,
-		subscriptionKey: 'zD_fp0xJKCNg2fbMfeFDWcq71tn0Z6O9PEvTGu0YE1U'
-	}).addTo(map);
-
-	L$1.marker(options.locations, { icon: L$1.icon({
-			iconUrl: '../marker.svg',
-			iconSize: [35, 49],
-			iconAnchor: [17, 49],
-			popupAnchor: [-3, -76]
-		}) }).addTo(map);
+var composeLayers = function composeLayers(L, layers, settings) {
+	return layers.map(function (_ref) {
+		var name = _ref.name,
+		    url = _ref.url;
+		return {
+			name: name,
+			tileLayer: L.tileLayer(url, settings)
+		};
+	});
 };
 
-//https://atlas.microsoft.com/map/tile/png?api-version=1.0&layer=basic&style=main&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}
-//https://atlas.microsoft.com/map/imagery/png?subscription-key={subscription-key}&api-version=1.0&style=satellite&zoom={zoom}&x={x}&y={y}
+var composeControls = function composeControls(mapLayers) {
+	return mapLayers.reduce(function (acc, _ref2) {
+		var name = _ref2.name,
+		    tileLayer = _ref2.tileLayer;
+		return acc[name] = tileLayer, acc;
+	}, {});
+};
 
-//there aren't satellite tiles available on azure, only 'imagery tile' which is
+var composeIcon = function composeIcon(_ref3) {
+	var url = _ref3.url,
+	    size = _ref3.size;
+	return {
+		iconUrl: url,
+		iconSize: size,
+		iconAnchor: [size[0] / 2, size[1]],
+		popupAnchor: [-3, -76]
+	};
+};
+
+var factory = function factory(sel, options) {
+	var L = window['L'];
+	var settings = {
+		attribution: '\xA9 ' + new Date().getFullYear() + ' Microsoft, \xA9 1992 - ' + new Date().getFullYear() + ' TomTom',
+		crossOrigin: true,
+		subscriptionKey: options.key
+	};
+	var mapLayers = composeLayers(L, options.tileLayers, settings);
+
+	var map = L.map(sel, { layers: mapLayers.map(function (layer) {
+			return layer.tileLayer;
+		}) });
+	map.fitBounds(options.locations, { maxZoom: options.maxZoom });
+	options.locations.length > 0 && options.locations.map(function (location) {
+		L.marker(location, { icon: L.icon(composeIcon(options.icon)) }).addTo(map);
+	});
+	options.tileLayers.length > 1 && L.control.layers(composeControls(mapLayers)).addTo(map);
+};
+
+var defaults = {
+	maxZoom: 14
+};
 
 var index = {
 	init: function init(sel, opts) {

@@ -1,3 +1,3 @@
 export default {
-	callback: null
+    maxZoom: 14
 };
