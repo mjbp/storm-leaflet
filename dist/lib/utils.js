@@ -20,7 +20,7 @@ export const composeMarkers = ({L, locations, icon, renderPopup}) => {
     return locations.reduce((acc, location) => {
         const marker = L.marker(location.location, { icon: L.icon(composeIcon(icon))});
         
-        if(location.properties) {
+        if(location.properties && renderPopup) {
             marker.properties = location.properties;
             marker.bindPopup(renderPopup.bind(marker));
         }

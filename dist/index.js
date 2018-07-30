@@ -1,6 +1,6 @@
 /**
  * @name storm-azure-map: 
- * @version 0.1.0: Mon, 30 Jul 2018 17:04:42 GMT
+ * @version 0.1.0: Mon, 30 Jul 2018 20:58:13 GMT
  * @author stormid
  * @license MIT
  */
