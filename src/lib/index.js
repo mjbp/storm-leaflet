@@ -21,7 +21,21 @@ export default (sel, model) => {
         // });
         if(model.geojson !== undefined) model.geojson.map(feature => {
             console.log(feature);
-            L.geoJSON(feature).addTo(map);
+            L.geoJSON(feature, {
+                onEachFeature(feature, layer){
+                    layer.on('click', e => {
+                        console.log(e);
+                    })
+                },
+                style(feature){
+                    return {
+                        fillColor: feature.properties.fillColor,
+                        color: feature.properties.fillColor,
+                        weight: 1,
+                        opacity: 0.4
+                    }
+                }
+            }).addTo(map);
         });
 
         return map;

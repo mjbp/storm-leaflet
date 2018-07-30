@@ -1,6 +1,6 @@
 /**
  * @name storm-azure-map: 
- * @version 0.1.0: Mon, 30 Jul 2018 16:45:54 GMT
+ * @version 0.1.0: Mon, 30 Jul 2018 17:04:47 GMT
  * @author stormid
  * @license MIT
  */
@@ -16751,7 +16751,21 @@ var factory = function factory(sel, model) {
 	// });
 	if (model.geojson !== undefined) model.geojson.map(function (feature) {
 		console.log(feature);
-		L.geoJSON(feature).addTo(map);
+		L.geoJSON(feature, {
+			onEachFeature: function onEachFeature(feature, layer) {
+				layer.on('click', function (e) {
+					console.log(e);
+				});
+			},
+			style: function style(feature) {
+				return {
+					fillColor: feature.properties.fillColor,
+					color: feature.properties.fillColor,
+					weight: 1,
+					opacity: 0.4
+				};
+			}
+		}).addTo(map);
 	});
 
 	return map;
