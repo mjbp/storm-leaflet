@@ -1,19 +1,28 @@
 import 'leaflet';
-import { composeControls, composeLayers, composeIcon } from './utils';
+import 'leaflet.markercluster';
+import { composeControls, composeMarkers, composeLayers } from './utils';
 
-export default (sel, options) => {
-    const L = window['L'];
-    const settings = {
-        attribution: `© ${new Date().getFullYear()} Microsoft, © 1992 - ${new Date().getFullYear()} TomTom`,
-        crossOrigin: true,
-        subscriptionKey: options.key
-    };
-    const mapLayers = composeLayers(L, options.tileLayers, settings);
-    
-    const map = L.map(sel, { layers: mapLayers.map(layer => layer.tileLayer) });
-    map.fitBounds(options.locations, { maxZoom: options.maxZoom });
-    options.locations.length > 0 && options.locations.map(location => {
-        L.marker(location, { icon: L.icon(composeIcon(options.icon))}).addTo(map);
-    });
-    options.tileLayers.length > 1 && L.control.layers(composeControls(mapLayers)).addTo(map);
+export default (sel, model) => {   
+        model.L = window['L'];
+        
+        const mapLayers = composeLayers(model);    
+        const map = L.map(sel, { 
+            layers: mapLayers.map(layer => layer.tileLayer),
+            zoom: model.zoom,
+            center: model.center,
+            scrollWheelZoom: false
+        });
+
+        if(model.center === undefined) map.fitBounds(model.locations.map(location => location.location), { maxZoom: model.maxZoom });
+        if(model.locations.length > 0) map.addLayer(composeMarkers(model)); 
+        if(model.tileLayers.length > 1) L.control.layers(composeControls(mapLayers)).addTo(map);
+        // if(model.polygons !== undefined) model.polygons.map(polygon => {
+        //     L.polygon(polygon.features, {color: polygon.color.fill, stroke: polygon.color.stroke}).addTo(map);
+        // });
+        if(model.geojson !== undefined) model.geojson.map(feature => {
+            console.log(feature);
+            L.geoJSON(feature).addTo(map);
+        });
+
+        return map;
 };

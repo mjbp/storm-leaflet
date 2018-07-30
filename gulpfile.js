@@ -96,6 +96,7 @@ gulp.task('js:es5-rollup', function() {
 			presets: ['env']
 		}))
         .pipe(wrap({
+            namespace: componentName(),
             template: umdTemplate
         }))
         .pipe(header(banner, {pkg : pkg}))
@@ -138,9 +139,9 @@ gulp.task('example:async', function(){
     return gulp.src('./dist/*.standalone.js')
 		.pipe(gulp.dest('./example/js/'));
 });
-gulp.task('example', ['example:import', 'example:async']);
+gulp.task('example', ['example:import']);
 
-gulp.task('server', ['js', 'copy', 'example'], function() {
+gulp.task('server', ['js', 'example'], function() {
     browserSync({
         notify: false,
         // https: true,
@@ -149,9 +150,11 @@ gulp.task('server', ['js', 'copy', 'example'], function() {
     });
 
       gulp.watch(['src/**/*'], function(){
-          runSequence('js', 'copy', 'example', reload);
+          runSequence('js','example', reload);
       });
-      gulp.watch(['example/**/*'], ['example', reload]);
+      gulp.watch(['example/src/**/*'], function(){
+        runSequence('js','example', reload);
+    });
       
 });
  
@@ -167,5 +170,5 @@ gulp.task('deploy', ['example'], function() {
 gulp.task('default', ['server']);
 gulp.task('serve', ['server']);
 gulp.task('build', function() {
-    runSequence('js', 'copy', 'example');
+    runSequence('js', 'example');
 });
