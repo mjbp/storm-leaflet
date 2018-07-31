@@ -1,18 +1,18 @@
 {
-  "name": "storm-azure-map",
+  "name": "storm-leaflet",
   "version": "0.1.0",
   "description": "",
   "author": "stormid",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mjbp/storm-azure-map.git"
+    "url": "https://github.com/mjbp/storm-leaflet.git"
   },
   "bugs": {
-    "url": "https://github.com/mjbp/storm-azure-map/issues"
+    "url": "https://github.com/mjbp/storm-leaflet/issues"
   },
   "main": "dist/index.js",
-  "browser": "dist/storm-azure-.standalone.js",
+  "browser": "dist/storm-leaflet.standalone.js",
   "keywords": [
     "stormid",
     "map",

@@ -10,7 +10,7 @@ const locations = [{"location":[55.9722472222,-3.17140277778],"properties":{"nam
 const init = () => {
 
     Map.init('js-map-single', { 
-        subscriptionKey: 'zD_fp0xJKCNg2fbMfeFDWcq71tn0Z6O9PEvTGu0YE1U',
+        subscriptionKey: '',
         locations: [{ location: [55.972247, -3.171403] }],
         zoom: 11,
         center: [55.972247, -3.171403],
@@ -22,7 +22,7 @@ const init = () => {
     });
     
     Map.init('js-map-clusters', { 
-        subscriptionKey: 'zD_fp0xJKCNg2fbMfeFDWcq71tn0Z6O9PEvTGu0YE1U',
+        subscriptionKey: '',
         locations,
         zoom: 9,
         center: [55.9786725, -3.1734148],
@@ -37,7 +37,7 @@ const init = () => {
     });
     
     Map.init('js-map-polygons', { 
-        subscriptionKey: 'zD_fp0xJKCNg2fbMfeFDWcq71tn0Z6O9PEvTGu0YE1U',
+        subscriptionKey: '',
         zoom: 7,
         center: [56.413901, -4.042969],
         tileLayers: [{ url:  'https://atlas.microsoft.com/map/tile/png?api-version=1.0&layer=basic&style=main&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}'}],
@@ -51,16 +51,24 @@ const init = () => {
                 fillColor: feature.properties.fillColor,
                 color: feature.properties.fillColor,
                 weight: 1,
-                opacity: 1
+                opacity: 0.5,
+                fillOpacity: 0.5
             }
         },
         onEachFeature(feature, layer){
             layer.on('click', e => {
-                console.log(feature.properties.regionId);
-                // window.location = `./${feature.properties.regionId}`;
+                window.location.href = `/visit-a-place/search-results?r=${feature.properties.regionId}`;
             });
-            layer.on('mouseover', e => { layer.setStyle({ fillColor: feature.properties.hoverColor })  });
-            layer.on('mouseout', e => { layer.setStyle({ fillColor: feature.properties.fillColor }) });
+            layer.on('mouseover', e => { 
+                layer.setStyle({ 
+                    fillColor: feature.properties.hoverColor,
+                    color: feature.properties.hoverColor
+                })  
+            });
+            layer.on('mouseout', e => { layer.setStyle({ 
+                fillColor: feature.properties.fillColor,
+                color: feature.properties.fillColor
+            }) });
         }
     });
     
