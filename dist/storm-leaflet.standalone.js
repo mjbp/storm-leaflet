@@ -1,6 +1,6 @@
 /**
  * @name storm-leaflet: 
- * @version 0.1.0: Tue, 31 Jul 2018 14:53:02 GMT
+ * @version 0.1.0: Tue, 07 Aug 2018 07:54:57 GMT
  * @author stormid
  * @license MIT
  */
@@ -16717,7 +16717,7 @@ var composeMarkers = function composeMarkers(_ref5) {
 	    renderPopup = _ref5.renderPopup;
 
 	return locations.reduce(function (acc, location) {
-		var marker = L.marker(location.location, { icon: L.icon(composeIcon(icon)) });
+		var marker = L.marker(location.location, Object.assign({}, icon ? { icon: L.icon(composeIcon(icon)) } : {}));
 
 		if (location.properties && renderPopup) {
 			marker.properties = location.properties;

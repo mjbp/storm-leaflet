@@ -14,11 +14,7 @@ const init = () => {
         locations: [{ location: [55.972247, -3.171403] }],
         zoom: 11,
         center: [55.972247, -3.171403],
-        tileLayers: [{ url:  'https://atlas.microsoft.com/map/tile/png?api-version=1.0&layer=basic&style=main&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}'}],
-        icon: {
-            url: '../map-marker.svg',
-            size: [25, 40]
-        }
+        tileLayers: [{ url:  'https://atlas.microsoft.com/map/tile/png?api-version=1.0&layer=basic&style=main&zoom={z}&x={x}&y={y}&subscription-key={subscriptionKey}'}]
     });
     
     Map.init('js-map-clusters', { 

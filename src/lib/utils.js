@@ -18,7 +18,7 @@ export const composeIcon = ({ url, size }) => ({
 
 export const composeMarkers = ({L, locations, icon, renderPopup}) => {
     return locations.reduce((acc, location) => {
-        const marker = L.marker(location.location, { icon: L.icon(composeIcon(icon))});
+        const marker = L.marker(location.location, Object.assign({}, icon ? { icon: L.icon(composeIcon(icon)) } : {}));
         
         if(location.properties && renderPopup) {
             marker.properties = location.properties;
